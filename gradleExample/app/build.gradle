@@ -9,6 +9,7 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'java'
 }
 
 repositories {
@@ -34,6 +35,11 @@ application {
     mainClass = 'gradleExample.App'
 }
 
+jar { 
+    archiveBaseName = 'gradle-example'
+    archiveVersion = '0.1'
+}
+
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
@@ -45,3 +51,4 @@ tasks.register("hello") {
         println "Hello World!"
     }
 }
+

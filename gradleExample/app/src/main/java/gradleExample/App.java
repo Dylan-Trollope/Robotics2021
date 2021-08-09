@@ -12,6 +12,7 @@ import lejos.hardware.lcd.*;
 
 
 
+
 public class App {
 
     static GraphicsLCD screen;
@@ -24,9 +25,9 @@ public class App {
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
 
-        screen = LCD.getInstance();
+        // screen = LCD.getInstance();
 
-        screen.clear();
+        // screen.clear();
         
         
 
