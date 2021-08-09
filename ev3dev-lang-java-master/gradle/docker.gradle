@@ -1,0 +1,18 @@
+def baseDir = project.projectDir.getAbsolutePath()
+def dockerName = "gdt-" + project.name.toLowerCase() + ":" + version.toLowerCase()
+def dockerFile = "$baseDir/docker/Dockerfile"
+
+task dockerBuild(type: Exec) {
+    group "docker"
+    description "Builds the needed docker container."
+
+    commandLine "docker", "build", "-t", "$dockerName", "-f", "$dockerFile", "$baseDir"
+}
+
+task dockerTest(type: Exec) {
+    group "docker"
+    description "Runs gradle 'test' task in a Docker container."
+    dependsOn "dockerBuild"
+
+    commandLine "docker", "run", "--rm", "$dockerName", "./gradlew", "test"
+}
