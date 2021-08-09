@@ -37,7 +37,10 @@ application {
 
 jar { 
     archiveBaseName = 'gradle-example'
-    archiveVersion = '0.1'
+    archiveVersion = '0.2'
+    manifest { 
+        attributes 'Main-Class': 'gradleExample.App'
+    }
 }
 
 tasks.named('test') {
