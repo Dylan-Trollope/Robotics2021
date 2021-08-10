@@ -7,23 +7,28 @@ package gradleexample;
 
 import ev3dev.actuators.LCD;
 import lejos.hardware.lcd.*;
+import lejos.utility.Delay;
 
 
 
 public class App {
 
-    static GraphicsLCD screen;
-
-
-    public String getGreeting() {
-        return "Hello World!";
-    }
+    static GraphicsLCD screen = LCD.getInstance();
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
-        screen = LCD.getInstance();
-        screen.clear();
-        
+
+        screen.setColor(0,0,0);
+        screen.drawRect(0,0, screen.getWidth(), screen.getHeight());
+        screen.fillRect(0,0, screen.getWidth(), screen.getHeight());
+
+        //screen.setColor(Color.WHITE);
+        screen.setColor(255,255,255);
+        screen.drawString("HELLO, WORLD!", (screen.getWidth()/ 2)-30, screen.getHeight()/2, 0);
+
+        screen.refresh();
+
+        Delay.msDelay(5000);
+
         
         
     }
