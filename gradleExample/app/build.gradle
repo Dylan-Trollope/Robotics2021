@@ -32,16 +32,24 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'gradleExample.App'
+    mainClass = 'gradleexample.App'
 }
+
+
+
 
 jar { 
     archiveBaseName = 'gradle-example'
     archiveVersion = '0.2'
     manifest { 
-        attributes 'Main-Class': 'gradleExample.App'
+        attributes 'Main-Class': 'gradleexample.App'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
+
+
 
 tasks.named('test') {
     // Use JUnit Platform for unit tests.

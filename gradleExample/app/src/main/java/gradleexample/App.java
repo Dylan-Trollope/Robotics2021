@@ -3,13 +3,10 @@
  */
 
 
-package gradleExample;
+package gradleexample;
 
 import ev3dev.actuators.LCD;
 import lejos.hardware.lcd.*;
-
-
-
 
 
 
@@ -24,14 +21,9 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
-
-        // screen = LCD.getInstance();
-
-        // screen.clear();
+        screen = LCD.getInstance();
+        screen.clear();
         
-        
-
-
         
         
     }
