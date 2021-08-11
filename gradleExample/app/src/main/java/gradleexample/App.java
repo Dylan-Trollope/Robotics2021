@@ -6,30 +6,89 @@
 package gradleexample;
 
 import ev3dev.actuators.LCD;
+import ev3dev.actuators.Sound;
+import ev3dev.actuators.ev3.EV3Led;
+import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
+import lejos.hardware.LED;
+import lejos.hardware.port.MotorPort;
 import lejos.hardware.lcd.*;
 import lejos.utility.Delay;
 
 
 
+
+
 public class App {
 
-    static GraphicsLCD screen = LCD.getInstance();
+    
 
     public static void main(String[] args) {
 
+        screenTest();
+        soundTest();
+        LEDTest();
+        motorTest();
+
+
+    }
+
+
+    public static void motorTest() { 
+
+        final EV3LargeRegulatedMotor mA = new EV3LargeRegulatedMotor(MotorPort.A);
+        mA.setSpeed(500);
+        mA.brake();
+        mA.forward();
+        Delay.msDelay(2000);
+        mA.stop();
+        
+    }
+
+    public static void screenTest() {
+        GraphicsLCD screen = LCD.getInstance();
         screen.setColor(0,0,0);
         screen.drawRect(0,0, screen.getWidth(), screen.getHeight());
         screen.fillRect(0,0, screen.getWidth(), screen.getHeight());
-
-        //screen.setColor(Color.WHITE);
         screen.setColor(255,255,255);
         screen.drawString("HELLO, WORLD!", (screen.getWidth()/ 2)-30, screen.getHeight()/2, 0);
-
         screen.refresh();
-
         Delay.msDelay(5000);
 
-        
-        
     }
+
+    public static void soundTest() { 
+
+        Sound sound = Sound.getInstance();
+        sound.beep();
+        sound.playTone(300, 500);
+    }
+
+
+    public static void LEDTest() {
+
+        LED led = new EV3Led(EV3Led.LEFT);
+        led.setPattern(0);
+        Delay.msDelay(1000);
+        led.setPattern(1);
+        Delay.msDelay(1000);
+        led.setPattern(2);
+        Delay.msDelay(1000);
+        led.setPattern(3);
+        Delay.msDelay(1000);
+        led.setPattern(0);
+
+        LED led2 = new EV3Led(EV3Led.RIGHT);
+        led2.setPattern(0);
+        Delay.msDelay(1000);
+        led2.setPattern(1);
+        Delay.msDelay(1000);
+        led2.setPattern(2);
+        Delay.msDelay(1000);
+        led2.setPattern(3);
+        Delay.msDelay(1000);
+        led2.setPattern(0);
+    }
+
+
+
 }

@@ -28,6 +28,12 @@ dependencies {
     implementation("com.github.ev3dev-lang-java:ev3dev-lang-java:2.4.13")
     implementation("com.github.ev3dev-lang-java:lejos-navigation:0.2.0")
     implementation("com.github.ev3dev-lang-java:lejos-commons:0.7.1")
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+	
+	testCompileOnly 'org.projectlombok:lombok:1.18.20'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
 
 application {
