@@ -9,10 +9,12 @@ import ev3dev.actuators.LCD;
 import ev3dev.actuators.Sound;
 import ev3dev.actuators.ev3.EV3Led;
 import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
-import lejos.hardware.LED;
-import lejos.hardware.port.MotorPort;
 import lejos.hardware.lcd.*;
 import lejos.utility.Delay;
+import lejos.hardware.port.MotorPort;
+import lejos.hardware.LED;
+import lejos.hardware.Sounds;
+import lejos.hardware.Audio;
 
 
 
@@ -24,13 +26,25 @@ public class App {
 
     public static void main(String[] args) {
 
-        screenTest();
-        soundTest();
+        
+        // soundTest();
         LEDTest();
-        motorTest();
+        // motorTest();
+
+        
+
+
+        Sound.getInstance().beep();
+        Sound.getInstance().playTone(300, 500);
+        Sound.getInstance().playTone(400, 500);
+
+        
 
 
     }
+
+
+    
 
 
     public static void motorTest() { 
@@ -58,36 +72,38 @@ public class App {
 
     public static void soundTest() { 
 
-        Sound sound = Sound.getInstance();
-        sound.beep();
-        sound.playTone(300, 500);
+        
+        
     }
 
 
     public static void LEDTest() {
 
         LED led = new EV3Led(EV3Led.LEFT);
+        LED led2 = new EV3Led(EV3Led.RIGHT);
+
+
         led.setPattern(0);
+        led2.setPattern(0);
         Delay.msDelay(1000);
         led.setPattern(1);
-        Delay.msDelay(1000);
-        led.setPattern(2);
-        Delay.msDelay(1000);
-        led.setPattern(3);
-        Delay.msDelay(1000);
-        led.setPattern(0);
-
-        LED led2 = new EV3Led(EV3Led.RIGHT);
-        led2.setPattern(0);
-        Delay.msDelay(1000);
         led2.setPattern(1);
         Delay.msDelay(1000);
+        led.setPattern(2);
         led2.setPattern(2);
         Delay.msDelay(1000);
+        led.setPattern(3);
         led2.setPattern(3);
         Delay.msDelay(1000);
+        led.setPattern(0);
         led2.setPattern(0);
+
+        
+        led2.setPattern(0);
+
     }
+
+    
 
 
 
