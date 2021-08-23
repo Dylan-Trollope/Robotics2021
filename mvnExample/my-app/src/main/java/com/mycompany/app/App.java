@@ -57,7 +57,7 @@ public class App  {
         mA.brake();
         mA.forward();
         Delay.msDelay(2000);
-        mA.stop()
+        mA.stop();
         
     }
 

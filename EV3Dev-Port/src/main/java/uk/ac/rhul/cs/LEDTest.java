@@ -93,6 +93,9 @@ public class LEDTest {
 
     }
 
+    /** 
+     * Help screen during testing if the correct args aren't provided
+    */
     public static String help() { 
         return "\nPlease specify an argument\n" + 
                "1: Left LED\n" +
