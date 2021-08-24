@@ -1,4 +1,6 @@
 package uk.ac.rhul.cs.robotics;
+
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -48,7 +50,7 @@ import lejos.robotics.mapping.LineMap;
 import lejos.robotics.navigation.Pose;
 import lejos.robotics.navigation.Waypoint;
 import lejos.robotics.pathfinding.Path;
-import uk.ac.rhul.cs.Robotics.PCMapper;
+
 
 public class PCMapper extends Application {
 

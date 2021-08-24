@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.rhul.cs.robotics.PCMapper">
+   <children>
+      <GridPane prefHeight="32.0" prefWidth="1146.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="280.0" minWidth="10.0" prefWidth="260.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="545.0" minWidth="10.0" prefWidth="201.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="607.0" minWidth="10.0" prefWidth="230.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="514.0" minWidth="10.0" prefWidth="305.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="596.0" minWidth="10.0" prefWidth="310.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <FlowPane id="connectControls" fx:id="connectControls" hgap="20.0" prefWidth="250.0" style="-fx-border-color: black;">
+               <children>
+                <Button fx:id="connectButton" mnemonicParsing="false" onAction="#connect" text="Connect:">
+                     <FlowPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </FlowPane.margin></Button>
+                  <HBox alignment="CENTER_RIGHT">
+                     <children>
+                        <Label alignment="BOTTOM_RIGHT" text="10.0.1." />
+                        <Spinner fx:id="spinner" prefHeight="26.0" prefWidth="92.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </FlowPane>
+            <HBox fx:id="drawButtons" prefHeight="114.0" prefWidth="303.0" spacing="10.0" style="-fx-border-color: black;" GridPane.columnIndex="4">
+               <children>
+                  <RadioButton accessibleText="Draw barrier lines on map" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#MapSelect" selected="true" text="Map Lines" toggleGroup="$MapDrive">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="MapDrive" />
+                     </toggleGroup>
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                  </RadioButton>
+                  <RadioButton accessibleText="draw the bounding rectangle" contentDisplay="RIGHT" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#BoundarySelect" text="Boundary" toggleGroup="$MapDrive">
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                  </RadioButton>
+                  <RadioButton accessibleText="get robot pose and destination" mnemonicParsing="false" onAction="#DriveSelect" text="Robot" toggleGroup="$MapDrive">
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin></RadioButton>
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </HBox>
+            <Label id="connectedLabel" fx:id="connectedLabel" prefHeight="16.0" prefWidth="160.0" text="Connected" textFill="RED" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <Button fx:id="sendButton" accessibleText="Send Data to EV3" disable="true" mnemonicParsing="false" onAction="#sendUpdate" text="Send To EV3" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+            <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="3">
+              <buttons>
+                  <Button mnemonicParsing="false" onAction="#toggleHelp" text="HELP" textFill="#31ab4c">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
+                  <Button id="startStopButton" fx:id="startStopButton" accessibleText="Start/SOP EV3 on Path" disable="true" mnemonicParsing="false" onAction="#sendStartStop" text="Start" />
+                  <Button fx:id="exitButton" accessibleText="Exit the Program" mnemonicParsing="false" onAction="#sendExit" text="Exit" />
+              </buttons>
+               <padding>
+                  <Insets right="10.0" />
+               </padding>
+            </ButtonBar>
+         </children>
+      </GridPane>
+      <ScrollPane style="-fx-border-color: Red;">
+         <content>
+            <StackPane fx:id="mainView" prefHeight="720.0" prefWidth="1280.0">
+               <children>
+                  <Canvas fx:id="gridCanvas" height="720.0" width="1280.0" />
+                  <Canvas fx:id="pathCanvas" height="720.0" width="1280.0" />
+                  <Pane fx:id="robotPane" prefHeight="720.0" prefWidth="1280.0">
+                     <children>
+                        <ImageView id="robot" fx:id="robot" disable="true" fitHeight="52.0" fitWidth="51.0" layoutX="500.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@robot.png" />
+                           </image>
+                        </ImageView>
+                        <Line fx:id="journeyArrow" endX="520.0" endY="275.0" startX="520.0" startY="175.0" stroke="RED" />
+                     </children></Pane>
+                  <Canvas id="mapCanvas" fx:id="mapCanvas" height="720.0" width="1280.0" />
+                  <Canvas id="mapLineCanvas" fx:id="mapLineCanvas" height="720.0" onKeyTyped="#procUndo" onMouseDragged="#canvasDragged" onMousePressed="#canvasPressed" onMouseReleased="#canvasReleased" width="1280.0" />
+               </children>
+            </StackPane>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>

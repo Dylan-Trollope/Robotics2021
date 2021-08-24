@@ -16,10 +16,10 @@ import ev3dev.sensors.Button;
 import lejos.hardware.port.MotorPort;
 import lejos.robotics.RegulatedMotor;
 
-import utils.robotics.chassis.Chassis;
-import utils.robotics.chassis.Wheel;
-import utils.robotics.chassis.WheeledChassis;
-import utils.robotics.navigation.MovePilot;
+import lejos.robotics.chassis.Chassis;
+import lejos.robotics.chassis.Wheel;
+import lejos.robotics.chassis.WheeledChassis;
+import lejos.robotics.navigation.MovePilot;
 
 import lejos.robotics.mapping.LineMap;
 import lejos.robotics.navigation.DestinationUnreachableException;
@@ -63,14 +63,13 @@ public class EV3Mapper {
     LCD.getInstance().drawString("IP " + BASE_IP + ip_addr + "   ", 0, 4, 0);
     int id = Button.waitForAnyPress();
     while (id != Button.ENTER.getId()) {
-      switch (id) {
-        case Button.UP.getId():
-          ip_addr++;
-          break;
-        case Button.DOWN.getId():
-          ip_addr--;
-          break;
+
+      if (id == Button.UP.getId()) { 
+        ip_addr++;
+      } else if (id == Button.DOWN.getId()) {
+        ip_addr--;
       }
+
       ip_addr = Math.min(254, ip_addr);
       ip_addr = Math.max(1, ip_addr);
       LCD.getInstance().drawString("IP " + BASE_IP + ip_addr + "   ", 0, 4, 0);
@@ -78,8 +77,8 @@ public class EV3Mapper {
     }
 
     LCD.getInstance().clear();
-    LCD.drawString("Server::" + BASE_IP + ip_addr + "   ", 0, 0);
-    LCD.drawString("Connecting ...", 0, 1);
+    LCD.getInstance().drawString("Server::" + BASE_IP + ip_addr + "   ", 0, 0, 0);
+    LCD.getInstance().drawString("Connecting ...", 0, 1, 0);
     SocketAddress sa = new InetSocketAddress(BASE_IP + ip_addr, PORT);
     Socket connection = null;
     try {
@@ -88,11 +87,11 @@ public class EV3Mapper {
       connection.connect(sa, 1500); // Timeout possible
       in = new DataInputStream(connection.getInputStream());
       out = new DataOutputStream(connection.getOutputStream());
-      LCD.drawString("Connected to Server", 0, 1);
+      LCD.getInstance().drawString("Connected to Server", 0, 1,0);
 
     } catch (Exception ex) {
       // Could be Timeout or just a normal IO exception
-      LCD.drawString(ex.getMessage(), 0, 6);
+      LCD.getInstance().drawString(ex.getMessage(), 0, 6, 0);
       connection = null;
     }
 
@@ -105,13 +104,13 @@ public class EV3Mapper {
     while (connection != null) {
       try {
         int command = in.readChar();
-        LCD.clear(3);
+        LCD.getInstance().clear();
         if (command == CLOSED) {
-          LCD.drawString("Remote close", 0, 3);
+          LCD.getInstance().drawString("Remote close", 0, 3, 0);
           connection = null;
         }
         if (command == COMMANDS.MAP.getCode()) {
-          LCD.drawString("(M)AP", 0, 3);
+          LCD.getInstance().drawString("(M)AP", 0, 3, 0);
           map = new LineMap();
           map.loadObject(in);
           if (map != null) {
@@ -120,7 +119,7 @@ public class EV3Mapper {
           }
         }
         if (command == COMMANDS.EXIT.getCode()) {
-          LCD.drawString("E(X)IT", 0, 3);
+          LCD.getInstance().drawString("E(X)IT", 0, 3, 0);
           connection = null;
         }
         if (command == COMMANDS.POSE.getCode()) {
@@ -130,7 +129,7 @@ public class EV3Mapper {
           // System.out.println("POSE: Recvd: " + from.getX() + ", " + from.getY() + ", " + from.getHeading());
         }
         if (command == COMMANDS.DESTINATION.getCode()) {
-          LCD.drawString("(D)EST.", 0, 3);
+          LCD.getInstance().drawString("(D)EST.", 0, 3, 0);
           if (pf != null) {
             navigator.stop();
             try {
@@ -148,7 +147,7 @@ public class EV3Mapper {
               route.dumpObject(out);
               navigator.setPath(route);
             } catch (DestinationUnreachableException e) {
-              LCD.drawString("POSE UNREACHABLE", 0, 3);
+              LCD.getInstance().drawString("POSE UNREACHABLE", 0, 3, 0);
             }
           }
         }
@@ -159,14 +158,14 @@ public class EV3Mapper {
           if (navigator.getPoseProvider().getPose().distanceTo(destination) > 1) {
             navigator.followPath();
           }
-          LCD.drawString("(B)EGIN", 0, 3);
+          LCD.getInstance().drawString("(B)EGIN", 0, 3, 0);
           sender = new Timer(true); // make sure to always set Timer to use Daemon thread.
           TimerTask repeatSend = new SenderTask(out, navigator); 
           sender.schedule(repeatSend, 0, 200);
         }
         if (command == COMMANDS.STOP.getCode()) {
           navigator.stop();
-          LCD.drawString("(E)ND", 0, 3);
+          LCD.getInstance().drawString("(E)ND", 0, 3, 0);
           sender.cancel();
         }
       } catch (IOException e) {
@@ -174,8 +173,8 @@ public class EV3Mapper {
         connection = null;
       }
     }
-    LCD.clear();
-    LCD.drawString("Exiting - press ENTER", 0, 5);
+    LCD.getInstance().clear();
+    LCD.getInstance().drawString("Exiting - press ENTER", 0, 5, 0);
     Button.ENTER.waitForPressAndRelease();
   }
 
@@ -210,10 +209,10 @@ public class EV3Mapper {
           toSend.dumpObject(server);
           if (lastSent != null && lastSent.distanceTo(toSend.getLocation()) > 5) {
             // Wow - we seem to have jumped! - wtf - this happens and is hard to understand.
-            LCD.drawString("JUMPING??", 0,5);
+            LCD.getInstance().drawString("JUMPING??", 0,5,0);
           }
-          LCD.clear(4);
-          LCD.drawString("Sent:" + (int) toSend.getX() + "," + (int) toSend.getY()  + "    ", 0,4);
+          LCD.getInstance().clear();
+          LCD.getInstance().drawString("Sent:" + (int) toSend.getX() + "," + (int) toSend.getY()  + "    ", 0,4,0);
           lastSent = toSend;
         }
         server.flush();
