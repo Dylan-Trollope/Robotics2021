@@ -12,8 +12,9 @@ import java.util.TimerTask;
 import ev3dev.actuators.LCD;
 import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
 import ev3dev.sensors.Button;
-
+import lejos.hardware.lcd.GraphicsLCD;
 import lejos.hardware.port.MotorPort;
+import lejos.robotics.Color;
 import lejos.robotics.RegulatedMotor;
 
 import lejos.robotics.chassis.Chassis;
@@ -31,9 +32,12 @@ import lejos.robotics.pathfinding.Path;
 import lejos.robotics.pathfinding.PathFinder;
 import lejos.robotics.pathfinding.ShortestPathFinder;
 
+
 public class EV3Mapper {
   private final static String BASE_IP = "10.0.1."; // Check this from the PC application.
   private final static int PORT = 2468; // Yu can choose any port, but it must be the same on the
+  
+  private static GraphicsLCD lcd = LCD.getInstance();
 
   public static enum COMMANDS {
     POSE('P'), DESTINATION('D'), START('B'), STOP('E'), EXIT('X'), MAP('M');
@@ -49,6 +53,18 @@ public class EV3Mapper {
     }
   }
 
+  public static void writeMessage(String message) { 
+    lcd.setColor(Color.BLACK);
+    lcd.drawString(message, 50, 50, 0);
+    lcd.refresh();
+  }
+
+  public static void clear() { 
+    lcd.setColor(Color.WHITE);
+    lcd.fillRect(0, 0, lcd.getWidth(), lcd.getHeight());
+  }
+  
+
   public static void main(String[] args) {
     // server
     DataInputStream in = null;
@@ -58,6 +74,7 @@ public class EV3Mapper {
     LCD.getInstance().drawString("Use up/down", 0, 0, 0);
     LCD.getInstance().drawString("to set IP", 2, 1, 0);
     LCD.getInstance().drawString("ENTER to finish", 2, 2, 0);
+    LCD.getInstance().refresh();
 
     int ip_addr = 2;
     LCD.getInstance().drawString("IP " + BASE_IP + ip_addr + "   ", 0, 4, 0);

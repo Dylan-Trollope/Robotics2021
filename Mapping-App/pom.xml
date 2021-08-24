@@ -84,7 +84,7 @@
           <version>0.0.6</version>
           <configuration>
             <mainClass>
-              uk.ac.rhul.cs.robotics.Driver
+              uk.ac.rhul.cs.robotics.PCMapper
             </mainClass>
           </configuration>
         </plugin>
