@@ -380,7 +380,7 @@ public class PCMapper extends Application {
     int val = (Integer) spinner.getValue();
     ServerSocket serverSocket = null;
     try {
-      InetAddress addr = InetAddress.getByName("10.0.1." + val);
+      InetAddress addr = InetAddress.getByName("10.42.0.60");
       // serverSocket.setSoTimeout(300);
       serverSocket = new ServerSocket(2468, 1, addr);
     } catch (IOException e) {

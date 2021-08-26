@@ -44,7 +44,7 @@
                      </FlowPane.margin></Button>
                   <HBox alignment="CENTER_RIGHT">
                      <children>
-                        <Label alignment="BOTTOM_RIGHT" text="10.0.1." />
+                        <Label alignment="BOTTOM_RIGHT" text="10.42.0.60" />
                         <Spinner fx:id="spinner" prefHeight="26.0" prefWidth="92.0" />
                      </children>
                   </HBox>

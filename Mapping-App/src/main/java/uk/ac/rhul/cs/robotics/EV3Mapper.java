@@ -9,6 +9,9 @@ import java.net.SocketAddress;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ev3dev.actuators.LCD;
 import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
 import ev3dev.sensors.Button;
@@ -34,10 +37,21 @@ import lejos.robotics.pathfinding.ShortestPathFinder;
 
 
 public class EV3Mapper {
-  private final static String BASE_IP = "10.0.1."; // Check this from the PC application.
+
+  private final static String BASE_IP = "10.42.0."; // Check this from the PC application.
   private final static int PORT = 2468; // Yu can choose any port, but it must be the same on the
+
+  private static GraphicsLCD lcd = LCD.getInstance(); // 178 x 128
+  private final static int LINE_HEIGHT = 15;
+  private final static int MARGIN = 0;
+
+  static Logger logger = LoggerFactory.getLogger(PCMapper.class);
+
+
+  public static int getLine(int i) {
+    return i * LINE_HEIGHT;
+  }
   
-  private static GraphicsLCD lcd = LCD.getInstance();
 
   public static enum COMMANDS {
     POSE('P'), DESTINATION('D'), START('B'), STOP('E'), EXIT('X'), MAP('M');
@@ -53,49 +67,52 @@ public class EV3Mapper {
     }
   }
 
-  public static void writeMessage(String message) { 
+  public static void writeMessage(String message, int x, int y) { 
     lcd.setColor(Color.BLACK);
-    lcd.drawString(message, 50, 50, 0);
+    lcd.drawString(message, x, y, 0);
     lcd.refresh();
   }
 
-  public static void clear() { 
-    lcd.setColor(Color.WHITE);
-    lcd.fillRect(0, 0, lcd.getWidth(), lcd.getHeight());
-  }
-  
+
 
   public static void main(String[] args) {
     // server
     DataInputStream in = null;
     DataOutputStream out = null;
     Timer sender = null;
+
+    writeMessage("Use up/down to set IP", MARGIN, getLine(1));
+    writeMessage("ENTER to finish", MARGIN, getLine(2));
+
+    int ip_addr = 0;
+    writeMessage("IP " + BASE_IP + ip_addr + "   ", MARGIN, getLine(3));
     
-    LCD.getInstance().drawString("Use up/down", 0, 0, 0);
-    LCD.getInstance().drawString("to set IP", 2, 1, 0);
-    LCD.getInstance().drawString("ENTER to finish", 2, 2, 0);
-    LCD.getInstance().refresh();
+    Button.waitForAnyPress();
+    
+    while (!Button.ENTER.isDown()) {
 
-    int ip_addr = 2;
-    LCD.getInstance().drawString("IP " + BASE_IP + ip_addr + "   ", 0, 4, 0);
-    int id = Button.waitForAnyPress();
-    while (id != Button.ENTER.getId()) {
-
-      if (id == Button.UP.getId()) { 
+      if (Button.UP.isDown()) { 
         ip_addr++;
-      } else if (id == Button.DOWN.getId()) {
+      } else if (Button.DOWN.isDown()) {
         ip_addr--;
       }
 
       ip_addr = Math.min(254, ip_addr);
       ip_addr = Math.max(1, ip_addr);
-      LCD.getInstance().drawString("IP " + BASE_IP + ip_addr + "   ", 0, 4, 0);
-      id = Button.waitForAnyPress();
+      
+      lcd.clear();
+
+      writeMessage("Use up/down to set IP", 0, 10);
+      writeMessage("ENTER to finish", 0, 20);
+      writeMessage("IP " + BASE_IP + ip_addr + "   ", 0, 30);
+
+      Button.waitForAnyPress();
     }
 
-    LCD.getInstance().clear();
-    LCD.getInstance().drawString("Server::" + BASE_IP + ip_addr + "   ", 0, 0, 0);
-    LCD.getInstance().drawString("Connecting ...", 0, 1, 0);
+    lcd.clear();
+    writeMessage("Server::" + BASE_IP + ip_addr + "    ", MARGIN, getLine(1));
+    writeMessage("Connecting ...", MARGIN, getLine(2));
+
     SocketAddress sa = new InetSocketAddress(BASE_IP + ip_addr, PORT);
     Socket connection = null;
     try {
@@ -105,10 +122,13 @@ public class EV3Mapper {
       in = new DataInputStream(connection.getInputStream());
       out = new DataOutputStream(connection.getOutputStream());
       LCD.getInstance().drawString("Connected to Server", 0, 1,0);
+      writeMessage("Connected to Server", MARGIN, getLine(3));
 
     } catch (Exception ex) {
       // Could be Timeout or just a normal IO exception
-      LCD.getInstance().drawString(ex.getMessage(), 0, 6, 0);
+      writeMessage(ex.getMessage(), MARGIN, getLine(3));
+      logger.error(ex.toString());
+      
       connection = null;
     }
 
