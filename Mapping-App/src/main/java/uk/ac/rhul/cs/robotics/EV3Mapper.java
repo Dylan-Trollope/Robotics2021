@@ -68,6 +68,15 @@ public class EV3Mapper {
     static Logger logger = LoggerFactory.getLogger(EV3Mapper.class);
 
 
+
+    private static PathFinder pf = null;
+    private static Timer sender = null;
+    private static LineMap map = null;
+    private static Navigator navigator = getNavigator();
+    private static Waypoint destination = new Waypoint(0, 0);
+    private static final int CLOSED = -1;
+
+
     /**
      * Write to the screen based on line number 
      * 8 lines max (I think)
@@ -166,16 +175,7 @@ public class EV3Mapper {
     
 
     public static void main(String[] args) {
-        // server
         
-        Timer sender = null;
-        LineMap map = null;
-        Navigator navigator = getNavigator();
-        Waypoint destination = new Waypoint(0, 0);
-        PathFinder pf = null;
-        final int CLOSED = -1;
-
-
         ip_addr = setIPAddress();
         confirmIP();
         makeConnection();
@@ -195,9 +195,11 @@ public class EV3Mapper {
                     map.loadObject(in);
                     if (map != null) {
                         pf = new ShortestPathFinder(map);
-                        // System.out.println(map.getBoundingRect().getX() + ", " +
-                        // map.getBoundingRect().getY() + ", " + map.getBoundingRect().getWidth() + ", "
-                        // + map.getBoundingRect().getHeight());
+                        /*
+                        System.out.println(map.getBoundingRect().getX() + ", " +
+                        map.getBoundingRect().getY() + ", " + map.getBoundingRect().getWidth() + ", "
+                        + map.getBoundingRect().getHeight());
+                        */
                     }
                 }
 
@@ -205,6 +207,7 @@ public class EV3Mapper {
                     LCD.getInstance().drawString("E(X)IT", MARGIN, getLine(3), 0);
                     connection = null;
                 }
+
                 if (command == Commands.POSE.getCode()) {
                     Pose from = new Pose();
                     from.loadObject(in);
@@ -237,6 +240,7 @@ public class EV3Mapper {
                         }
                     }
                 }
+
                 if (command == Commands.START.getCode()) { // We must not get asked to send anything except Pose's until
                                                            // stop is called.
                     // Pose p = navigator.getPoseProvider().getPose();
