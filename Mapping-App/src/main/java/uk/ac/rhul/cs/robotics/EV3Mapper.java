@@ -68,7 +68,6 @@ public class EV3Mapper {
     static Logger logger = LoggerFactory.getLogger(EV3Mapper.class);
 
 
-
     /**
      * Write to the screen based on line number 
      * 8 lines max (I think)
@@ -129,13 +128,19 @@ public class EV3Mapper {
         return ip_addr;
     }
 
-
+    /**
+     * Screen that is diaplayed waiting for connection while connection is made
+     */
     public static void confirmIP() { 
         lcd.clear();
         writeMessage("Server::" + BASE_IP + ip_addr + "    ", MARGIN, getLine(1));
         writeMessage("Connecting ...", MARGIN, getLine(2));
     }
 
+
+    /**
+     * Initialises socket to make connection to the PC 
+     */
     public static void makeConnection() { 
 
         SocketAddress sa = new InetSocketAddress(BASE_IP + ip_addr, PORT);
@@ -164,24 +169,28 @@ public class EV3Mapper {
         // server
         
         Timer sender = null;
-
-
         LineMap map = null;
         Navigator navigator = getNavigator();
         Waypoint destination = new Waypoint(0, 0);
         PathFinder pf = null;
         final int CLOSED = -1;
 
+
+        ip_addr = setIPAddress();
+        confirmIP();
+        makeConnection();
+
         while (connection != null) {
             try {
                 int command = in.readChar();
                 LCD.getInstance().clear();
                 if (command == CLOSED) {
-                    LCD.getInstance().drawString("Remote close", 0, 3, 0);
+                    LCD.getInstance().drawString("Remote close", MARGIN, getLine(3), 0);
                     connection = null;
                 }
+
                 if (command == Commands.MAP.getCode()) {
-                    LCD.getInstance().drawString("(M)AP", 0, 3, 0);
+                    LCD.getInstance().drawString("(M)AP", MARGIN, getLine(3), 0);
                     map = new LineMap();
                     map.loadObject(in);
                     if (map != null) {
@@ -191,8 +200,9 @@ public class EV3Mapper {
                         // + map.getBoundingRect().getHeight());
                     }
                 }
+
                 if (command == Commands.EXIT.getCode()) {
-                    LCD.getInstance().drawString("E(X)IT", 0, 3, 0);
+                    LCD.getInstance().drawString("E(X)IT", MARGIN, getLine(3), 0);
                     connection = null;
                 }
                 if (command == Commands.POSE.getCode()) {
@@ -253,9 +263,10 @@ public class EV3Mapper {
             }
         }
         LCD.getInstance().clear();
-        LCD.getInstance().drawString("Exiting - press ENTER", 0, 5, 0);
+        LCD.getInstance().drawString("Exiting - press ENTER", MARGIN, getLine(5), 0);
         Button.ENTER.waitForPressAndRelease();
     }
+
 
     private static Navigator getNavigator() {
         RegulatedMotor left = new EV3LargeRegulatedMotor(MotorPort.B); // These are swapped since there is no "reverse"
@@ -297,7 +308,7 @@ public class EV3Mapper {
                 }
                 server.flush();
             } catch (IOException e) {
-                return;
+                e.printStackTrace();;
             }
         }
     }
