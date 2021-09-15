@@ -39,11 +39,11 @@ public class EV3Mapper {
 
     /**
      * Parameters for networking
-     * ip_addr is changed on screen to the correct IP
+     * ipAddr is changed on screen to the correct IP
      */
-    private final static String BASE_IP = "10.42.0."; // Check this from the PC application.
-    private static int ip_addr;
-    private final static int PORT = 2468; // You can choose any port, but it must be the same on the
+    private static final String BASE_IP = "10.42.0."; // Check this from the PC application.
+    private static int ipAddr;
+    private  static final int PORT = 2468; // You can choose any port, but it must be the same on the
 
 
     /**
@@ -58,23 +58,14 @@ public class EV3Mapper {
      * Parameters for writing to the screen
      */
     private static GraphicsLCD lcd = LCD.getInstance(); // 178 x 128
-    private final static int LINE_HEIGHT = 15;
-    private final static int MARGIN = 0;
+    private static final int LINE_HEIGHT = 15;
+    private static final int MARGIN = 0;
 
 
     /**
      * Logger useful for logging output to the remote terminal for debugging
      */
     static Logger logger = LoggerFactory.getLogger(EV3Mapper.class);
-
-
-
-    private static PathFinder pf = null;
-    private static Timer sender = null;
-    private static LineMap map = null;
-    private static Navigator navigator = getNavigator();
-    private static Waypoint destination = new Waypoint(0, 0);
-    private static final int CLOSED = -1;
 
 
     /**
@@ -107,34 +98,33 @@ public class EV3Mapper {
      * Assumes that IP address starts with 10.42.0.
      * @return the last quarter of the IP address as int
      */
-    public static int setIPAddress() { 
-        ip_addr = 0;
+    public static void setIPAddress() { 
+        ipAddr = 0;
 
         writeMessage("Use UP/DOWN to set IP", MARGIN, getLine(1));
         writeMessage("ENTER to finish", MARGIN, getLine(2));
-        writeMessage("IP " + BASE_IP + ip_addr + "   ", MARGIN, getLine(3));
+        writeMessage("IP " + BASE_IP + ipAddr  + "   ", MARGIN, getLine(3));
 
         Button.waitForAnyPress();
 
         while (!Button.ENTER.isDown()) {
 
             if (Button.UP.isDown()) {
-                ip_addr++;
+                ipAddr++;
             } else if (Button.DOWN.isDown()) {
-                ip_addr--;
+                ipAddr--;
             }
 
-            ip_addr = Math.min(254, ip_addr);
-            ip_addr = Math.max(1, ip_addr);
+            ipAddr = Math.min(254, ipAddr);
+            ipAddr = Math.max(1, ipAddr);
 
             lcd.clear();
 
             writeMessage("Use up/down to set IP", 0, 10);
             writeMessage("ENTER to finish", 0, 20);
-            writeMessage("IP " + BASE_IP + ip_addr + "   ", 0, 30);
+            writeMessage("IP " + BASE_IP + ipAddr + "   ", 0, 30);
             Button.waitForAnyPress();
         }
-        return ip_addr;
     }
 
     /**
@@ -142,7 +132,7 @@ public class EV3Mapper {
      */
     public static void confirmIP() { 
         lcd.clear();
-        writeMessage("Server::" + BASE_IP + ip_addr + "    ", MARGIN, getLine(1));
+        writeMessage("Server::" + BASE_IP + ipAddr + "    ", MARGIN, getLine(1));
         writeMessage("Connecting ...", MARGIN, getLine(2));
     }
 
@@ -152,11 +142,10 @@ public class EV3Mapper {
      */
     public static void makeConnection() { 
 
-        SocketAddress sa = new InetSocketAddress(BASE_IP + ip_addr, PORT);
+        SocketAddress sa = new InetSocketAddress(BASE_IP + ipAddr, PORT);
         
         try {
             connection = new Socket();
-
             connection.connect(sa, 1500); // Timeout possible
             in = new DataInputStream(connection.getInputStream());
             out = new DataOutputStream(connection.getOutputStream());
@@ -167,18 +156,24 @@ public class EV3Mapper {
             // Could be Timeout or just a normal IO exception
             writeMessage(ex.getMessage(), MARGIN, getLine(3));
             logger.error(ex.toString());
-
             connection = null;
         }
 
     }
-    
+
 
     public static void main(String[] args) {
         
-        ip_addr = setIPAddress();
+        setIPAddress();
         confirmIP();
         makeConnection();
+
+        PathFinder pf = null;
+        Timer sender = null;
+        LineMap map = null;
+        Navigator navigator = getNavigator();
+        Waypoint destination = new Waypoint(0, 0);
+        final int CLOSED = -1;
 
         while (connection != null) {
             try {
@@ -195,11 +190,6 @@ public class EV3Mapper {
                     map.loadObject(in);
                     if (map != null) {
                         pf = new ShortestPathFinder(map);
-                        /*
-                        System.out.println(map.getBoundingRect().getX() + ", " +
-                        map.getBoundingRect().getY() + ", " + map.getBoundingRect().getWidth() + ", "
-                        + map.getBoundingRect().getHeight());
-                        */
                     }
                 }
 
@@ -212,9 +202,9 @@ public class EV3Mapper {
                     Pose from = new Pose();
                     from.loadObject(in);
                     navigator.getPoseProvider().setPose(from);
-                    // System.out.println("POSE: Recvd: " + from.getX() + ", " + from.getY() + ", "
-                    // + from.getHeading());
+                   
                 }
+                
                 if (command == Commands.DESTINATION.getCode()) {
                     LCD.getInstance().drawString("(D)EST.", 0, 3, 0);
                     if (pf != null) {
@@ -225,13 +215,6 @@ public class EV3Mapper {
                             start.moveUpdate(1);
                             destination.loadObject(in);
                             Path route = pf.findRoute(start, destination);
-                            // System.out.println("DEST: Start: " + start.getX() + ", " + start.getY() + ",
-                            // " + start.getHeading());
-                            // System.out.println("Dest: END: " + end.getX() + ", " + end.getY());
-                            // for (int index = 0 ; index < route.size() ; index++) {
-                            // System.out.println("DEST: Path (point): " + route.get(index).getX() + ", " +
-                            // route.get(index).getY());
-                            // }
                             out.writeChar('R');
                             route.dumpObject(out);
                             navigator.setPath(route);
@@ -241,13 +224,7 @@ public class EV3Mapper {
                     }
                 }
 
-                if (command == Commands.START.getCode()) { // We must not get asked to send anything except Pose's until
-                                                           // stop is called.
-                    // Pose p = navigator.getPoseProvider().getPose();
-                    // System.out.println("NAV: Start Pose: " + p.getX() + ", " + p.getY() + ", " +
-                    // p.getHeading());
-                    // IF we are very close to the destination then we do not bother to actually
-                    // navigate to it.
+                if (command == Commands.START.getCode()) { 
                     if (navigator.getPoseProvider().getPose().distanceTo(destination) > 1) {
                         navigator.followPath();
                     }
@@ -312,7 +289,7 @@ public class EV3Mapper {
                 }
                 server.flush();
             } catch (IOException e) {
-                e.printStackTrace();;
+                e.printStackTrace();
             }
         }
     }

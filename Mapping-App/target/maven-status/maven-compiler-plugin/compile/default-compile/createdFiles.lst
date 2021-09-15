@@ -1,10 +1,10 @@
+uk/ac/rhul/cs/robotics/Commands.class
 uk/ac/rhul/cs/robotics/PCMapper$Map.class
 uk/ac/rhul/cs/robotics/PCMapper$Commands.class
 uk/ac/rhul/cs/robotics/EV3Mapper$SenderTask.class
 uk/ac/rhul/cs/robotics/Driver.class
 uk/ac/rhul/cs/robotics/PCMapper$ReaderThread$1.class
 uk/ac/rhul/cs/robotics/PCMapper$ConnectionStatus.class
-uk/ac/rhul/cs/robotics/EV3Mapper$COMMANDS.class
 uk/ac/rhul/cs/robotics/PCMapper.class
 uk/ac/rhul/cs/robotics/PCMapper$DrawType.class
 uk/ac/rhul/cs/robotics/PCMapper$1.class

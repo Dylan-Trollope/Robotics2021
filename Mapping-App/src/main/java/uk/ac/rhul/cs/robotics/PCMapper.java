@@ -62,7 +62,7 @@ public class PCMapper extends Application {
   ////////////////////////////////////////////////
   // Finally - a help screen!
   //////////////////////////////////////////////////////
-  private static String help[]  = {
+  private static String[] help  = {
     "This is a program in which you can draw Line Maps to send to an EV3.\n",
     "To interact with the program: draw a map, set the robot position and desired destiantion and send these to the EV3.\n\n" +
         "  Use the radio buttons ",
@@ -341,17 +341,17 @@ public class PCMapper extends Application {
   }
 
   @FXML
-  void DriveSelect(ActionEvent event) { // Draw the robot pose (click and drag) or the destination (click and release)
+  void driveSelect(ActionEvent event) { // Draw the robot pose (click and drag) or the destination (click and release)
     drawType = DrawType.DRIVE;
   }
 
   @FXML
-  void MapSelect(ActionEvent event) { // Draw lines on the map when selected - Delete KEY removes lines 
+  void mapSelect(ActionEvent event) { // Draw lines on the map when selected - Delete KEY removes lines 
     drawType = DrawType.MAP;
   }
 
   @FXML
-  void BoundarySelect(ActionEvent event) { // Draw the boundary
+  void boundarySelect(ActionEvent event) { // Draw the boundary
     drawType = DrawType.BOUNDARY;
   }
 
@@ -378,11 +378,10 @@ public class PCMapper extends Application {
       return;
     }
 
-    int val = (Integer) spinner.getValue();
     ServerSocket serverSocket = null;
     try {
-      InetAddress addr = InetAddress.getByName("10.42.0.60");
-      // serverSocket.setSoTimeout(300);
+      InetAddress addr = InetAddress.getByName("10.42.0.1");
+      
       serverSocket = new ServerSocket(2468, 1, addr);
     } catch (IOException e) {
       return;
@@ -470,8 +469,7 @@ public class PCMapper extends Application {
     // Next send the Pose
     Pose currentPose = localMap.getPose();
     if (currentPose != null) {
-      // System.out.println("Sending (PC) Pose: " + currentPose.getX() + ", " + currentPose.getY() +
-      // ", " + currentPose.getHeading());
+
       try {
         out.writeChar(Commands.POSE.getCode());
         currentPose.dumpObject(out);
@@ -484,7 +482,6 @@ public class PCMapper extends Application {
     // Finally send the new destination
     Waypoint goTo = localMap.getDestination();
     if (goTo != null) {
-      // System.out.println("Sending (PC) Destination: " + goTo.getX() + ", " + goTo.getY());
       try {
         out.writeChar(Commands.DESTINATION.getCode());
         goTo.dumpObject(out);
@@ -554,14 +551,14 @@ public class PCMapper extends Application {
     robotRotation.setPivotX(X_ROBOT_OFFSET);
     robotRotation.setPivotY(Y_ROBOT_OFFSET);
     robot.getTransforms().add(robotRotation);
-    drawGridLinesAndSetBoundary(mapCanvas);
-    mapLineCanvas.addEventFilter(MouseEvent.ANY, (e) -> mapLineCanvas.requestFocus());
+    drawGridLinesAndSetBoundary();
+    mapLineCanvas.addEventFilter(MouseEvent.ANY, e -> mapLineCanvas.requestFocus());
     hasConnected(ConnectionStatus.WAITING);
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // Initialisation mechanisms
-  private void drawGridLinesAndSetBoundary(Canvas mapArea) {
+  private void drawGridLinesAndSetBoundary() {
     GraphicsContext gContext = gridCanvas.getGraphicsContext2D();
     gContext.setFill(Color.BLACK);
     gContext.setStroke(Color.LIGHTGRAY);
@@ -618,13 +615,13 @@ public class PCMapper extends Application {
       this.in = in;
     }
 
+    @Override
     public void run() {
       try {
         // We can read in car Pose or Planned Path - nothing else.
         while (true) {
           if (in.readChar() == Commands.POSE.getCode()) { // Pose
             pose.loadObject(in);
-            // System.out.println("Got (robot) Pose: " + pose.getX() + ", " + pose.getY() + ", " + pose.getHeading());
             Platform.runLater(new Runnable() {
               public void run() {
                 double xPos = pose.getX() / xScale - X_ROBOT_OFFSET;
@@ -641,8 +638,7 @@ public class PCMapper extends Application {
             double[] xList = new double[count];
             double[] yList = new double[count];
             for (int index = 0; index < count; index++) {
-            //  System.out.println("Got(robot) Path (point): " + path.get(index).getX() + ", " + path.get(index).getY());
-
+    
               xList[index] = path.get(index).getX() / xScale;
               yList[index] = mapCanvas.getHeight() - path.get(index).getY() / yScale;
             }
@@ -660,7 +656,7 @@ public class PCMapper extends Application {
           }
         }
       } catch (IOException e) {
-        return;
+        e.printStackTrace();
       }
     }
   }
