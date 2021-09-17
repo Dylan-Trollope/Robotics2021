@@ -65,7 +65,7 @@
                         <Insets top="5.0" />
                      </HBox.margin>
                   </RadioButton>
-                  <RadioButton accessibleText="get robot pose and destination" mnemonicParsing="false" onAction="#driveSelect" text="Robot" toggleGroup="$MapDrive">
+                  <RadioButton accessibleText="get robot pose and destination" mnemonicParsing="false" onAction="#d riveSelect" text="Robot" toggleGroup="$MapDrive">
                      <HBox.margin>
                         <Insets top="5.0" />
                      </HBox.margin></RadioButton>

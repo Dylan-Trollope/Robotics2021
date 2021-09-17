@@ -1,1 +1,0 @@
-write instructions on how to install gradle on Unix and Windows
