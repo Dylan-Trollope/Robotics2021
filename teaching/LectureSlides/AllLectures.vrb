@@ -1,0 +1,49 @@
+\frametitle{HARD: Using (shared) state for rising edge detection (separate claps)}
+\note[item]{This robot is one of two states - waiting for a lull in sound betwen claps, and then waiting for a loud sound - which is the next clap}
+\vspace*{-3mm}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize\color{blue}, xleftmargin=0in, linewidth=11cm,emph={State}]
+public class State { // methods rather than a char field is better
+  private boolean waitingForRising = true;
+  public boolean isWaitingForRising() { return waitingForRising; }
+  public void setWaitingForRising(boolean b) { waitingForRising = b; }
+}
+\end{lstlisting}
+\vspace*{-3mm}
+\begin{columns}[T]
+\begin{column}{0.62\textwidth}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize\color{blue}, framexleftmargin=0.05in, xleftmargin=0in, linewidth=\textwidth,emph={takeControl, suppress, action, State}]
+// wait for a loud sound after a quiet one
+public class WFRise implements Behavior {
+  private State sharedState;
+  private float[] sound = new float[1];
+  public boolean takeControl() {
+    if (!sharedState.isWaitingForRising()) return false;
+    sp.fetchSample(sound, 0);
+    return (sound[0] > 0.5f);
+  }
+  public void suppress() {}
+  public void action(){
+    //  Do the "Heard a new clap" action
+    sharedState.setWaitingForRising(false);
+  } // constructor and sp def'n not shown
+\end{lstlisting}
+\end{column}
+\begin{column}{0.45\textwidth}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize\color{blue}, framexleftmargin=0.0in, xleftmargin=-3mm, linewidth=1.04\textwidth,emph={takeControl, suppress, action, State}]
+public class WFFall implements Behavior {
+  private State sharedState;
+  private float[] sound = new float[1];
+  public boolean takeControl() {
+    if (sharedState.isWaitingForRising()) {
+      return false;
+    }
+    sp.fetchSample(sound, 0);
+    return (sound[0] < 0.2f);
+  }
+  public void suppress() {}
+  public void action() {
+    sharedState.setWaitingForRising(true);
+  } // constructor and sp def'n not shown
+\end{lstlisting}
+\end{column}
+\end{columns}

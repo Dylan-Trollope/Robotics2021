@@ -1,0 +1,24 @@
+\frametitle{Square Dancing Robot}
+
+{
+\lstset{xleftmargin=0in, xrightmargin=0in, framexleftmargin=0in}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize\color{blue}]
+BaseRegulatedMotor mLeft = new EV3LargeRegulatedMotor(MotorPort.A);
+BaseRegulatedMotor mRight = new EV3LargeRegulatedMotor(MotorPort.B);
+
+mRight.forward();
+mLeft.forward();  Delay.msDelay(1000); // Both motors on for 1s - go forwards (side 1)
+mLeft.stop(); Delay.msDelay(200);      // Stop mLeft - turn a corner for 0.2s
+mLeft.forward(); Delay.msDelay(1000);  // Both motors on for 1s - go forwards (side 2)
+mLeft.stop(); Delay.msDelay(200);      // Stop mLeft - turn a corner for 0.2s
+mLeft.forward(); Delay.msDelay(1000);  // Both motors on for 1s - go forwards (side 3)
+mLeft.stop(); Delay.msDelay(200);      // Stop mLeft - turn a corner for 0.2s
+mLeft.forward(); Delay.msDelay(1000);  // Both motors on for 1s - go forwards (side 4)
+mLeft.stop(); Delay.msDelay(200);      // Stop mLeft - turn a corner for 0.2s
+mRight.stop();     // and stop.
+\end{lstlisting}
+}
+
+\begin{block}{Doesn't this code annoy you \textcolor{yellow}{even though it works}?}
+\textcolor{OrangeRed}{Cut and paste} has no place in code - hard to read or modify or even test
+\end{block}

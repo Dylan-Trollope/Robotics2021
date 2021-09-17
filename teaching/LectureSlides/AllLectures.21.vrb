@@ -1,0 +1,19 @@
+\frametitle{Example: Holy Smoke}
+
+\begin{lstlisting}[linewidth=12cm,emph={LCD,Delay,screen}]
+GraphicsLCD screen = LCD.getInstance();
+screen.clear();
+screen.drawString("Version 1.2", 0, 0, 0);
+screen.drawString("HOLY", 0, 10, 0);
+Delay.msDelay(1000);
+screen.drawString(" SMOKE", 0, 20, 0);
+\end{lstlisting}
+
+\begin{block}{Objects (like \textcolor{yellow}{\Verb!LCD!}) and Messages (like \textcolor{yellow}{\Verb!drawString!})}
+\begin{itemize}
+\item We are sending messages to a Java object called \lstinline!screen!
+\item We are sending the message \lstinline!drawString!
+\item Any additional information for the object we put into brackets.
+\item We are also sending a message to the \lstinline!Delay! object.
+\end{itemize}
+\end{block}

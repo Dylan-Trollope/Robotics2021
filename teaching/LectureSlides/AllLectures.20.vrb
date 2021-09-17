@@ -1,0 +1,17 @@
+\frametitle{Loops}
+\begin{block}{Waiting for something to change}
+\begin{itemize}
+\item \textcolor{OliveGreen}{You want to do something until you notice a change.}
+\item Say you just want to go straight ahead until you hear a loud noise.
+\item To do something over and over again you use a \lstinline!while! loop.
+\item You can then say: \textcolor{teal}{\emph{go forwards until you hear a loud noise}.}
+\end{itemize}
+\end{block}
+
+\begin{lstlisting}[emph={WHILE,ELIHW,DO},linewidth=12cm]
+GO FORWARDS
+WHILE ITS QUIET DO:
+  PRINT "Its all quiet" ON THE LCD SCREEN
+ELIHW
+PRINT "Wow - what a noise" ON THE LCD SCREEN
+\end{lstlisting}

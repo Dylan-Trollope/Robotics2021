@@ -1,0 +1,21 @@
+\frametitle{Example: Motorise this}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize\color{blue},linewidth=14cm,emph={BaseRegulatedMotor, EV3LargeRegulatedMotor}]
+BaseRegulatedMotor mLeft = new EV3LargeRegulatedMotor(MotorPort.A);
+BaseRegulatedMotor mRight = new EV3LargeRegulatedMotor(MotorPort.B);
+
+mLeft.setSpeed(720);// 2 Revolutions Per Second (RPS)
+mRight.setSpeed(720);
+
+mLeft.forward();
+mRight.forward();
+Delay.msDelay(1000);
+mLeft.stop();
+mRight.stop();
+
+mLeft.close();  // Things need to be closed sometimes.
+mRight.close();
+\end{lstlisting}
+
+\begin{block}{\textcolor{yellow}{Maybe} you can work out what this program will do?}
+Again, if you cannot work it out, upload and run it.  \textcolor{OrangeRed}{Computers do not break.}
+\end{block}

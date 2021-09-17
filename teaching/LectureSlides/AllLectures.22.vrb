@@ -1,0 +1,21 @@
+\frametitle{A light meter}
+\begin{block}{Keeping Accounts in a variable}
+\begin{itemize}
+\item You want to record the highest light value that your robot sees while it is running.
+\item You create a variable for putting numbers into: \lstinline!float highestLightValue;!
+\item Now you need to update the value \lstinline!if! you see a brighter light.
+\item Robot programs (like this one) run forever, or until a button is pressed!
+\end{itemize}
+\end{block}
+
+\begin{lstlisting}[emph={FI,IF,DO,WHILE,ELIHW},linewidth=12cm]
+STORE 0 IN highestLightValue
+WHILE True DO
+  IF sensorValue BIGGER THAN highestLightValue THEN
+    STORE sensorValue IN highestLightValue
+  FI
+ELIHW
+PRINT highestLightValue ON THE LCD SCREEN
+\end{lstlisting}
+
+

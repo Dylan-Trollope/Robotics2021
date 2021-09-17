@@ -1,0 +1,32 @@
+\frametitle{\colorbox{black}{\color{green}SAFE:} Watching the Sensor}
+\note[item]{This is the hardest case yet where we see some new constructs.  Listen to my explanation, then pause the video to make sure that you understand the program.}
+\note[item]{watcher in main is constructed to refer to a new Thread - like everything in Java a second task is an object - in this case a Thread object.}
+\note[item]{Like all objects we have a constructor - this one is told about the motor we use in case it wants to send messages to it}
+\note[item]{A Thread needs to be started.  It is obvious what this does - after starting the Thread JVM runs both at the same time}
+\note[item]{setDaemon(true) is necessary otherwise the new Thread will keep going after main has finished!}
+\note[item]{The watcher thread here slows the motor to nearly stopped if the touch sensor hits something - Thread.yield prevents this Thread hoggin the JVM's attention}
+\note[item]{Notice however, than when the obstruction is cleared the watcher speeds up the motor again and the rotation always completes.}
+\note[item]{Now pause the video, you might like to try running these programs on your robot to make sure you have understood them.}
+\begin{lstlisting}[basicstyle=\ttfamily\tiny\color{blue}]
+public class TestWaitStop { // Now no-one gets killed!
+  final static int TOTAL = 1440;
+  public static void main(String[] args) {
+    BaseRegulatedMotor mL = new EV3LargeRegulatedMotor(MotorPort.A);
+    Thread watcher = new WatcherThread(mL);
+    watcher.setDaemon(true); watcher.start(); mL.rotate(TOTAL);
+    LCD.getInstance().drawString("Finished " + mL.getTachoCount(),2,4,0);
+    Button.ENTER.waitForPressAndRelease();
+}}
+public class WatcherThread extends Thread {
+  private BaseRegulatedMotor m;
+  public WatcherThread(BaseRegulatedMotor _m) { m = _m; }
+  public void run() {
+    EV3TouchSensor ts = new EV3TouchSensor(SensorPort.S2);
+    SampleProvider sp = ts.getTouchMode();
+    float[] samples = new float[1];
+    while (true) {
+      sp.fetchSample(samples, 0);
+      m.setSpeed(samples[0] > 0.5 ? 1 : 720);
+      Thread.yield(); // Polite nod....
+}}}
+\end{lstlisting}

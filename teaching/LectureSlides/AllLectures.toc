@@ -1,0 +1,17 @@
+\babel@toc {english}{}
+\beamer@sectionintoc {1}{A Robot Design Exercise}{43}{0}{1}
+\beamer@sectionintoc {2}{Working in a group}{48}{0}{2}
+\beamer@sectionintoc {3}{Java for Robotics}{51}{0}{3}
+\beamer@sectionintoc {4}{Classical problems for a mobile robot\\Where we are headed!}{73}{0}{4}
+\beamer@sectionintoc {5}{Modelling the world\\ Working with Java representations of Motors.}{77}{0}{5}
+\beamer@sectionintoc {6}{It is very important to write good code.\\Good code is readable and modifiable}{90}{0}{6}
+\beamer@sectionintoc {7}{Getting More information}{94}{0}{7}
+\beamer@sectionintoc {8}{Hints for Better Programming}{97}{0}{8}
+\beamer@sectionintoc {9}{Motors, LCD screens etc., are easy}{105}{0}{9}
+\beamer@sectionintoc {10}{Motors, LCD screens etc., are easy\\ Sensors are a bit harder}{110}{0}{10}
+\beamer@sectionintoc {11}{All Sensors provide Samples}{115}{0}{11}
+\beamer@sectionintoc {13}{Looping until a change occurs.\\ Event driven programming (at last).}{126}{0}{12}
+\beamer@sectionintoc {14}{Using a \lstinline !SampleProvider! to filter sensor values}{132}{0}{13}
+\beamer@sectionintoc {15}{Using a \leavevmode {\color {purple}Thread} to Watch a sensor}{139}{0}{14}
+\beamer@sectionintoc {18}{Behaviours\\ The Rodney Brooks subsumption architecture}{169}{0}{15}
+\beamer@sectionintoc {19}{Project Extras and more advanced programming}{182}{0}{16}

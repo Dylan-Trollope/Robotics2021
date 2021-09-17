@@ -1,0 +1,18 @@
+\frametitle{Highlight program}
+\note[item]{There are several question about this code in the quiz}
+\begin{lstlisting}
+GraphicsLCD screen = LCD.getInstance();
+float highestLightValue = 0f;
+EV3ColorSensor cs = new EV3ColorSensor(SensorPort.S1);
+SampleProvider sp = cs.getRedMode();
+float[] samples = new float[1];
+while (true) {
+  sp.fetchSample(samples, 0);
+  if (samples[0] > highestLightValue) {
+    highestLightValue = samples[0];
+    screen.clear(); // Why is this needed?
+    screen.drawString("Highest Light: " + highestLightValue, 1, 1, 0);
+  }
+}
+\end{lstlisting}
+
